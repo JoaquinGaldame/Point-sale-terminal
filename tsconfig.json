@@ -3,6 +3,24 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
+    "baseUrl": "./",
+    "paths": {
+      "@app/*":[
+        "src/app/*"
+      ],
+      "@modules":[
+        "src/app/modules/."
+      ],
+      "@common":[
+        "src/app/core/Common/."
+      ],
+      "@images":[
+        "src/assets/images/."
+      ],
+      "@enviroments/*":[
+        "src/enviroments/*"
+      ]
+    },
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
