@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { ToolbarComponent } from './core/Common/toolbar/toolbar.component';
 import { LayoutComponent } from './core/Common/layout/layout.component';
-import { SidenavService } from './core/Common/toolbar/toolbar.service';
+import { SidenavService } from './core/services/toolbar.service';
+import { ISettings } from './core/Settings/settings.interface';
+import { settingService } from './core/services/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,17 @@ import { SidenavService } from './core/Common/toolbar/toolbar.service';
 })
 export class AppComponent {
   title = 'Point-Sale-Terminal';
-  constructor(private sidenavService: SidenavService){}
+  config: ISettings | null = null;
+  constructor(
+    private sidenavService: SidenavService,
+    private settingService: settingService
+  ){
+    // Subscription to configuration
+    this.settingService.config$.subscribe(config => {
+      this.config = config;
+    });
+  }
+
   get sidenavOpen(): boolean {
     return this.sidenavService.isOpen;
   }
@@ -23,4 +35,9 @@ export class AppComponent {
     return this.sidenavService.isFixed;
   }
 
+  getThemeColor(option: number): string {
+    const colorValue =  (this.config?.themes[option].value) ? this.config?.themes[option].value.toString() : '';
+    console.log('eto trae color appcomponent ' + colorValue)
+    return 'bg-'+colorValue+'-100'
+  }
 }

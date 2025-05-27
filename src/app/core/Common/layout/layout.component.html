@@ -1,5 +1,6 @@
-<div class="bg-indigo-950 p-7 h-16 w-full fixed top-0 left-0 z-10 flex items-center shadow-lg"
+<div class=" p-7 h-16 w-full fixed top-0 left-0 z-10 flex items-center shadow-lg"
   [class.left-72]="sidenavService.isFixed"
-  [class.left-20]="!sidenavService.isFixed">
+  [class.left-20]="!sidenavService.isFixed"
+  [ngClass]="getThemeColor(0)">
   <h1 class="font-semibold text-2xl text-white h-full">Terminal Punto de Venta</h1>
 </div>

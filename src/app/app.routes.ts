@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { ToolbarComponent } from './core/Common/toolbar/toolbar.component';
 
 export const routes: Routes = [
     {
@@ -24,6 +23,10 @@ export const routes: Routes = [
         {
           path: 'reportes',
           loadChildren: () => import('./modules/reportes/reportes.routing').then(m=>m.REPORTES_ROUTES),
+        },
+        {
+          path: 'configuracion',
+          loadChildren: () => import('./core/Settings/settings.routing').then(m=>m.SETTINGS_ROUTES),
         },
         {
             path: '**',
