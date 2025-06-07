@@ -1,11 +1,11 @@
 import { ActionReducerMap } from "@ngrx/store";
 // States
-import { AuthUserState } from "@app/core/models/auth/auth.state";
-import { UserState } from "@app/core/models/users/users.state";
+import { AuthUserState } from "@app/store/states/auth.state";
+import { UserState } from "./states/users.state";
 
 // Reducers
-import { authUserReducer } from "./authentication/auth.reducer";
-import { usersReducer } from "./users/users.reducer";
+import { authUserReducer } from "../core/features/auth/auth.reducer";
+import { usersReducer } from "../core/features/users/users.reducer";
 
 
 // Pueden ir definidos otros datos de los demás componentes

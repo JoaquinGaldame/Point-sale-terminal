@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
-import { AuthUserModel } from '@app/core/models/auth/auth.interface';
+import { AuthUserModel } from '@app/core/features/auth/auth.interface';
 import { delay } from 'rxjs/operators'
 
 @Injectable({
@@ -76,9 +76,10 @@ export class AuthUserService {
 
       ]
     }
-    return of(authUserData).pipe(
-      delay(1500)
-    )
+    return of(authUserData)
+    // return of(authUserData).pipe(
+    //   delay(1500)
+    // )
   }
 
 }

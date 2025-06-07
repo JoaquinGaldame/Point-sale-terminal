@@ -8,6 +8,9 @@
       "@app/*":[
         "src/app/*"
       ],
+      "@core/*":[
+        "src/app/core/"
+      ],
       "@modules":[
         "src/app/modules/."
       ],
@@ -23,8 +26,9 @@
     },
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "strictPropertyInitialization": false,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,

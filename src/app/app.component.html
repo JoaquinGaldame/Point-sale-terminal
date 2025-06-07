@@ -1,11 +1,1 @@
-<div class="flex h-screen bg-white overflow-hidden" >
-  <div class="flex flex-col flex-1 transition-all duration-300"
-       [class.ml-72]="sidenavFixed"
-       [class.ml-20]="!sidenavFixed">
-    <app-layout></app-layout>
-    <main class="flex-1 overflow-auto p-6 mt-16" [ngClass]="getThemeColor(0)">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-  <app-toolbar class="flex fixed left-0 top-0 bottom-0 z-10 h-full"></app-toolbar>
-</div>
+<router-outlet></router-outlet>
