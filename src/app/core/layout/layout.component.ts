@@ -1,45 +1,64 @@
-import { DOCUMENT, NgIf } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core';
-import { EmptyLayoutComponent } from './layouts/empty/empty.component';
-import { CenteredLayoutComponent } from './layouts/horizontal/centered/centered.component'
-import { ClassicLayoutComponent } from './layouts/vertical/classic/classic.component';
-import { ClassyLayoutComponent } from './layouts/vertical/classy/classy.component';
-import { filter, Subject, takeUntil } from 'rxjs';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { DOCUMENT} from '@angular/common';
+import { Component, inject, Inject, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core';
+import { ToolbarComponent } from './layouts/vertical/toolbar.component';
+import { HorizontalComponent } from './layouts/horizontal/horizontal.component';
+import { filter, Subject, take, takeUntil } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { ToolbarService } from '../services/toolbar.service';
+import { AlertComponent } from '../Common/Components/alert/alert.component';
+import { AlertService } from '../Common/Components/alert/alert.service';
+import { AlertData } from '../Common/Components/alert/alert.types';
+import { settingService } from '../services/settings.service';
+import { ISettings } from '../Settings/settings.interface';
+import { AppState } from '@app/store/app.state';
+
 @Component({
     selector     : 'layout',
     templateUrl  : './layout.component.html',
     styleUrls    : ['./layout.component.css'],
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
-    imports      : [NgIf, EmptyLayoutComponent, CenteredLayoutComponent, ClassyLayoutComponent, ClassicLayoutComponent],
+    imports      : [ ToolbarComponent, HorizontalComponent, RouterOutlet, AlertComponent ],
 })
 export class LayoutComponent implements OnInit, OnDestroy
 {
-  layout: string;
+  alerta: AlertData | null = null;
+  config: ISettings | null = null;
+  layout: string = '';
+  
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   constructor(
     private _activatedRoute: ActivatedRoute,
+    private store: Store<AppState>,
     @Inject(DOCUMENT) private _document: any,
     private _renderer2: Renderer2,
-    private _router: Router
+    private _router: Router,
+    private _toolbarService: ToolbarService,
+    private _alertService: AlertService,
+    private _settingsService: settingService
   )
   {
-    this.layout = 'empty';
+    // Subscription to configuration
+    this._settingsService.config$.subscribe(config => {
+      this.config = config;
+    });
+    this._alertService.alerta$.subscribe((data) => {
+      this.alerta = data;
+    });
   }
   
   ngOnInit(): void
   {
-    // Subscribe to NavigationEnd event
-    this._router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        takeUntil(this._unsubscribeAll),
-    ).subscribe(() =>
-    {
-        // Update the layout
-        this._updateLayout();
-    });
+  }
+
+  private getChildRoute(route: ActivatedRoute): ActivatedRoute {
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    return route;
   }
   
 
@@ -50,59 +69,12 @@ export class LayoutComponent implements OnInit, OnDestroy
     this._unsubscribeAll.complete();
   }
 
-      /**
-     * Update the selected layout
-     */
-    private _updateLayout(): void
-    {
-        // Get the current activated route
-        let route = this._activatedRoute;
-        while ( route.firstChild )
-        {
-            route = route.firstChild;
-        }
+  get sidenavOpen(): boolean {
+    return this._toolbarService.isOpen;
+  }
 
-        // 1. Set the layout from the config
-        this.layout = "centered"
-
-        // 2. Get the query parameter from the current route and
-        // set the layout and save the layout to the config
-        // const layoutFromQueryParam = route.snapshot.queryParamMap.get('layout');
-        // if ( layoutFromQueryParam )
-        // {
-        //     this.layout = layoutFromQueryParam;
-        //     if ( this.config )
-        //     {
-        //         this.config.layout = layoutFromQueryParam;
-        //     }
-        // }
-
-        // 3. Iterate through the paths and change the layout as we find
-        // a config for it.
-        //
-        // The reason we do this is that there might be empty grouping
-        // paths or componentless routes along the path. Because of that,
-        // we cannot just assume that the layout configuration will be
-        // in the last path's config or in the first path's config.
-        //
-        // So, we get all the paths that matched starting from root all
-        // the way to the current activated route, walk through them one
-        // by one and change the layout as we find the layout config. This
-        // way, layout configuration can live anywhere within the path and
-        // we won't miss it.
-        //
-        // Also, this will allow overriding the layout in any time so we
-        // can have different layouts for different routes.
-        const paths = route.pathFromRoot;
-        paths.forEach((path) =>
-        {
-            // Check if there is a 'layout' data
-            if ( path.routeConfig && path.routeConfig.data && path.routeConfig.data.layout )
-            {
-                // Set the layout
-                this.layout = path.routeConfig.data.layout;
-            }
-        });
-    }
+  get sidenavFixed(): boolean {
+    return this._toolbarService.isFixed;
+  }
 
 }

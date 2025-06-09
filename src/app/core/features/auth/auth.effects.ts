@@ -9,7 +9,7 @@ import { loginFailure, sigIn, sigInFailure, sigInSuccess } from "./auth.actions"
 
 
 @Injectable()
-export class ItemsEffect {
+export class AuthEffect {
   constructor(
     private actions$: Actions,
     private authService$: AuthUserService,
@@ -39,16 +39,31 @@ sigIn$ = createEffect(() =>
   )
 );
 
-  redirectOnLoginSuccess$ = createEffect(() =>
+sigInSuccessRedirect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(sigInSuccess),
       tap(() => {
-      const url = this.redirectService.getRedirectURL();
-      this.router.navigateByUrl(url);
-      this.redirectService.clearRedirectURL();
+        console.log('Va a redirigir ' )
+        this.router.navigateByUrl('/signed-in-redirect');
       })
     ),
-    { dispatch: false }
+    { dispatch: false }  // ← importante para efectos secundarios
   );
 
+// Para debuggear
+// sigIn$ = createEffect(() =>
+//   this.actions$.pipe(
+//     ofType(sigIn),
+//     tap(action => console.log('Effect recibió sigIn con:', action)), // Debug
+//     mergeMap(action =>
+//       this.authService$.getDataApi().pipe(
+//         map(user => {
+//           console.log('Dispara sigInSuccess con', user); // Debug
+//           return sigInSuccess({ user });
+//         }),
+//         catchError(error => of(sigInFailure({ error })))
+//       )
+//     )
+//   )
+// );
 }

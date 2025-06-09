@@ -8,11 +8,15 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { ROOT_REDUCERS } from './store/app.state';
 
+// Auth
+import { AuthEffect } from './core/features/auth/auth.effects';
+
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes), 
     provideAnimationsAsync(), 
     provideStore(ROOT_REDUCERS), 
-    provideEffects(), 
+    provideEffects(AuthEffect), 
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
 };

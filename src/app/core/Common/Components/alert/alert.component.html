@@ -1,82 +1,25 @@
 <div
-    class="fuse-alert-container"
-    *ngIf="!dismissible || dismissible && !dismissed"
-    [@fadeIn]="!dismissed"
-    [@fadeOut]="!dismissed">
-
-    <!-- Border -->
-    <div
-        class="fuse-alert-border"
-        *ngIf="appearance === 'border'"></div>
-
-    <!-- Icon -->
-    <div
-        class="fuse-alert-icon"
-        *ngIf="showIcon">
-
-        <!-- Custom icon -->
-        <div class="fuse-alert-custom-icon">
-            <ng-content select="[fuseAlertIcon]"></ng-content>
+  *ngIf="visible"
+  class="fixed bottom-10 left-1/2 transform -translate-x-1/2 transition-opacity duration-500 ease-in-out  z-50 w-full max-w-sm"
+>
+  <div
+    class="relative w-full p-4 rounded-xl shadow-xl animate-fade-in-out"
+    [ngClass]="estilos"
+  >
+    <div class="flex flex-col justify-start items-start">
+      <button
+        class="absolute top-1 right-2 text-xl font-bold hover:text-gray-500 focus:outline-none"
+        (click)="close()"
+      >
+        ×
+      </button>
+      <div class="flex items-start justify-center gap-2 font-sans">
+        <mat-icon class="text-sm">{{ icono }}</mat-icon>
+        <div>
+          <p class="font-semibold tracking-wide">{{ titulo }}</p>
+          <p class="text-sm">{{ mensaje }}</p>
         </div>
-
-        <!-- Default icons -->
-        <div class="fuse-alert-default-icon">
-
-            <mat-icon
-                *ngIf="type === 'primary'"
-                [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
-
-            <mat-icon
-                *ngIf="type === 'accent'"
-                [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
-
-            <mat-icon
-                *ngIf="type === 'warn'"
-                [svgIcon]="'heroicons_solid:x-circle'"></mat-icon>
-
-            <mat-icon
-                *ngIf="type === 'basic'"
-                [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
-
-            <mat-icon
-                *ngIf="type === 'info'"
-                [svgIcon]="'heroicons_solid:information-circle'"></mat-icon>
-
-            <mat-icon
-                *ngIf="type === 'success'"
-                [svgIcon]="'heroicons_solid:check-circle'"></mat-icon>
-
-            <mat-icon
-                *ngIf="type === 'warning'"
-                [svgIcon]="'heroicons_solid:exclamation-triangle'"></mat-icon>
-
-            <mat-icon
-                *ngIf="type === 'error'"
-                [svgIcon]="'heroicons_solid:x-circle'"></mat-icon>
-
-        </div>
-
+      </div>
     </div>
-
-    <!-- Content -->
-    <div class="fuse-alert-content">
-
-        <div class="fuse-alert-title">
-            <ng-content select="[fuseAlertTitle]"></ng-content>
-        </div>
-
-        <div class="fuse-alert-message">
-            <ng-content></ng-content>
-        </div>
-
-    </div>
-
-    <!-- Dismiss button -->
-    <button
-        class="fuse-alert-dismiss-button"
-        mat-icon-button
-        (click)="dismiss()">
-        <mat-icon [svgIcon]="'heroicons_solid:x-mark'"></mat-icon>
-    </button>
-
+  </div>
 </div>

@@ -1,3 +1,5 @@
+const { transform } = require('typescript');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{html,ts}", ],
@@ -14,6 +16,7 @@ module.exports = {
       ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
       pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       bounce: 'bounce 1s infinite',
+      'fade-in-out': 'fade-in-out 4s ease-in-out',
     },
     aria: {
       busy: 'busy="true"',
@@ -594,6 +597,12 @@ module.exports = {
           animationTimingFunction: 'cubic-bezier(0,0,0.2,1)',
         },
       },
+      'fade-in-out': {
+        '0%':   { opacity: '0', transform: 'translateY(20px)' },
+        '10%':  { opacity: '1', transform: 'translateY(0)' },
+        '90%':   { opacity: '1', transform: 'translateY(0)' },
+        '100%': { opacity: '0', transform: 'translateY(20px)' },
+      }
     },
     letterSpacing: {
       tighter: '-0.05em',

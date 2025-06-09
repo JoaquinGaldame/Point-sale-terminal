@@ -54,6 +54,12 @@ export const MENU_DEFINED: Menu[] = [
     submenu: false
   },
   {
+    title: "Productos",
+    icon: "inventory",
+    path: "productos",
+    submenu: false
+  },
+  {
     title: "Calendario",
     icon: "calendar_today",
     path: "calendario",

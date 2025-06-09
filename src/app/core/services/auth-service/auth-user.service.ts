@@ -76,10 +76,7 @@ export class AuthUserService {
 
       ]
     }
-    return of(authUserData)
-    // return of(authUserData).pipe(
-    //   delay(1500)
-    // )
+    return of(authUserData);
   }
 
 }

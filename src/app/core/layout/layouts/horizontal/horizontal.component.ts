@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SidenavService } from '../../services/toolbar.service';
+import { ToolbarService } from '../../../services/toolbar.service';
 import { settingService } from '@app/core/services/settings.service';
 import { ISettings } from '@app/core/Settings/settings.interface';
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 export class HorizontalComponent {
   config: ISettings | null = null;
   constructor(
-    public sidenavService: SidenavService,
+    public toolbarService: ToolbarService,
     private settingService: settingService
   ){
     // Subscription to configuration

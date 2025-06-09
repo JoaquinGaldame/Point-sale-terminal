@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class SidenavService {
+export class ToolbarService {
   public isOpen = false;
   public isFixed = false;
 

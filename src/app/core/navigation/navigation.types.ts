@@ -1,5 +1,5 @@
 export interface Navigation {
-  navigation: Menu[];
+  menu: Menu[];
 }
 
 export interface Menu {

@@ -11,14 +11,16 @@ export const AuthGuard: CanActivateFn = (route, state) => {
   const store = inject(Store<AppState>);
 
   return combineLatest([
-  store.select(selectAuthUser),
-  store.select(selectAuthInitialized)
-]).pipe(
-  filter(([_, initialized]) => initialized), // Espera hasta que esté inicializado
-  take(1),
-  map(([user]) => {
-    if (user) return true;
-    return router.parseUrl(`sign-in`);
-  })
-);
+    store.select(selectAuthUser),
+    store.select(selectAuthInitialized)
+  ]).pipe(
+    take(1), // solo una vez
+    map(([user, initialized]) => {
+      // Si no hay usuario o no se ha inicializado el estado, redirige
+      if (!user || !initialized) {
+        return router.parseUrl('/sign-in');
+      }
+      return true;
+    })
+  );
 };

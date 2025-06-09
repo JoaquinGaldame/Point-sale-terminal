@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { Store } from '@ngrx/store';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthUserState } from '@app/store/states/auth.state';
-import { AlertComponent } from '@app/core/Common/Components/alert/alert.component';
 import { AlertType } from '@app/core/Common/Components/alert/alert.types';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { filter, Observable, Subject, takeUntil } from 'rxjs';
@@ -22,7 +21,7 @@ import { login, loginSuccess } from '@app/core/features/auth/auth.actions';
   encapsulation: ViewEncapsulation.None,
   // animations   : fuseAnimations,
   standalone   : true,
-  imports      : [NgIf, AlertComponent, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, RouterLink],
+  imports      : [NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, RouterLink],
 })
 export class AuthUnlockSessionComponent implements OnInit
 {

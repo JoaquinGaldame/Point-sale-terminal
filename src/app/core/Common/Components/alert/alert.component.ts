@@ -1,193 +1,65 @@
-import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { NgIf } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { AlertService } from './alert.service';
-import { UtilsService } from '@app/core/services/utils/utils.service';
-import { AlertType, AlertAppearance } from './alert.types';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { NgClass, NgIf } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { AlertType } from './alert.types';
+
 
 @Component({
-    selector       : 'alert',
-    templateUrl    : './alert.component.html',
-    styleUrls      : ['./alert.component.css'],
-    encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    // animations     : fuseAnimations,
-    exportAs       : 'Alert',
-    standalone     : true,
-    imports        : [NgIf, MatIconModule, MatButtonModule],
+  selector: 'app-alert',
+  templateUrl: './alert.component.html',
+  standalone   : true,
+  imports: [NgClass, NgIf, MatIcon]
 })
-export class AlertComponent implements OnChanges, OnInit, OnDestroy
-{
-  static ngAcceptInputType_dismissible: BooleanInput;
-  static ngAcceptInputType_dismissed: BooleanInput;
-  static ngAcceptInputType_showIcon: BooleanInput;
+export class AlertComponent implements OnInit, OnDestroy {
+  @Input() tipo: AlertType;
+  @Input() titulo: string = '';
+  @Input() mensaje: string = '';
 
-  @Input() appearance: AlertAppearance = 'soft';
-  @Input() dismissed: boolean = false;
-  @Input() dismissible: boolean = false;
-  @Input() name: string = this._utilsService.randomId();
-  @Input() showIcon: boolean = true;
-  @Input() type: AlertType = 'primary';
-  @Output() readonly dismissedChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+  visible = true;
+  private timeoutId: any;
 
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-  constructor(
-      private _changeDetectorRef: ChangeDetectorRef,
-      private _alertService: AlertService,
-      private _utilsService: UtilsService,
-  )
-  {
+  ngOnInit(): void {
+    this.timeoutId = setTimeout(() => {
+      this.visible = false;
+    }, 4000); // 4 segundos antes de desvanecerse
   }
 
-  /**
-   * Host binding for component classes
-   */
-  @HostBinding('class') get classList(): any
-  {
-    /* eslint-disable @typescript-eslint/naming-convention */
-    return {
-      'fuse-alert-appearance-border' : this.appearance === 'border',
-      'fuse-alert-appearance-fill'   : this.appearance === 'fill',
-      'fuse-alert-appearance-outline': this.appearance === 'outline',
-      'fuse-alert-appearance-soft'   : this.appearance === 'soft',
-      'fuse-alert-dismissed'         : this.dismissed,
-      'fuse-alert-dismissible'       : this.dismissible,
-      'fuse-alert-show-icon'         : this.showIcon,
-      'fuse-alert-type-primary'      : this.type === 'primary',
-      'fuse-alert-type-accent'       : this.type === 'accent',
-      'fuse-alert-type-warn'         : this.type === 'warn',
-      'fuse-alert-type-basic'        : this.type === 'basic',
-      'fuse-alert-type-info'         : this.type === 'info',
-      'fuse-alert-type-success'      : this.type === 'success',
-      'fuse-alert-type-warning'      : this.type === 'warning',
-      'fuse-alert-type-error'        : this.type === 'error',
-    };
-    /* eslint-enable @typescript-eslint/naming-convention */
+  close() {
+    this.visible = false;
+    clearTimeout(this.timeoutId);
   }
 
-  /**
-  * On changes
-  *
-  * @param changes
-  */
-  ngOnChanges(changes: SimpleChanges): void
-  {
-    // Dismissed
-    if ( 'dismissed' in changes )
-    {
-      // Coerce the value to a boolean
-      this.dismissed = coerceBooleanProperty(changes.dismissed.currentValue);
+  ngOnDestroy(): void {
+    clearTimeout(this.timeoutId);
+  }
 
-      // Dismiss/show the alert
-      this._toggleDismiss(this.dismissed);
-    }
-
-    // Dismissible
-    if ( 'dismissible' in changes )
-    {
-      // Coerce the value to a boolean
-      this.dismissible = coerceBooleanProperty(changes.dismissible.currentValue);
-    }
-
-    // Show icon
-    if ( 'showIcon' in changes )
-    {
-      // Coerce the value to a boolean
-      this.showIcon = coerceBooleanProperty(changes.showIcon.currentValue);
+  get estilos() {
+    switch (this.tipo) {
+      case 'error':
+        return 'bg-red-500 text-gray-50';
+      case 'success':
+        return 'bg-green-500 text-gray-50';
+      case 'warning':
+        return 'bg-yellow-500  text-gray-900';
+      case 'notification':
+        return 'bg-white  text-gray-600';
+      default:
+        return '';
     }
   }
 
-  /**
-  * On init
-  */
-  ngOnInit(): void
-  {
-    // Subscribe to the dismiss calls
-    this._alertService.onDismiss
-        .pipe(
-            filter(name => this.name === name),
-            takeUntil(this._unsubscribeAll),
-        )
-        .subscribe(() =>
-        {
-            // Dismiss the alert
-            this.dismiss();
-        });
-
-    // Subscribe to the show calls
-    this._alertService.onShow
-        .pipe(
-            filter(name => this.name === name),
-            takeUntil(this._unsubscribeAll),
-        )
-        .subscribe(() =>
-        {
-          // Show the alert
-          this.show();
-        });
-  }
-
-  /**
-  * On destroy
-  */
-  ngOnDestroy(): void
-  {
-      // Unsubscribe from all subscriptions
-      this._unsubscribeAll.next(null);
-      this._unsubscribeAll.complete();
-  }
-
-
-  /**
-   * Dismiss the alert
-   */
-  dismiss(): void
-  {
-      // Return if the alert is already dismissed
-      if ( this.dismissed )
-      {
-          return;
-      }
-
-      // Dismiss the alert
-      this._toggleDismiss(true);
-  }
-
-
-  /**
-   * Show the dismissed alert
-   */
-  show(): void
-  {
-    // Return if the alert is already showing
-    if ( !this.dismissed )
-    {
-      return;
+  get icono() {
+    switch (this.tipo) {
+      case 'error':
+        return 'error';
+      case 'success':
+        return 'check';
+      case 'warning':
+        return 'warning';
+      case 'notification':
+        return 'mail';
+      default:
+        return '';
     }
-
-    // Show the alert
-    this._toggleDismiss(false);
-  }
-
-  private _toggleDismiss(dismissed: boolean): void
-  {
-    // Return if the alert is not dismissible
-    if ( !this.dismissible )
-    {
-      return;
-    }
-
-    // Set the dismissed
-    this.dismissed = dismissed;
-
-    // Execute the observable
-    this.dismissedChanged.next(this.dismissed);
-
-    // Notify the change detector
-    this._changeDetectorRef.markForCheck();
   }
 }

@@ -9,7 +9,7 @@ export class NavigationService
     private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
   constructor() {
     const data: Navigation = {
-    navigation: MENU_DEFINED,
+    menu: MENU_DEFINED,
   };
     this._navigation.next(data);
   }
@@ -36,7 +36,7 @@ export class NavigationService
     get(): Observable<Navigation>
     {
       const data: Navigation = {
-        navigation: MENU_DEFINED
+        menu: MENU_DEFINED
       }
       this._navigation.next(data)
       return this.navigation$;

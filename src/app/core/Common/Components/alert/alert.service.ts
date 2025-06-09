@@ -1,75 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { AlertType, AlertData } from './alert.types';
 
-@Injectable({providedIn: 'root'})
-export class AlertService
-{
-    private readonly _onDismiss: ReplaySubject<string> = new ReplaySubject<string>(1);
-    private readonly _onShow: ReplaySubject<string> = new ReplaySubject<string>(1);
 
-    /**
-     * Constructor
-     */
-    constructor()
-    {
+@Injectable({
+  providedIn: 'root',
+})
+export class AlertService {
+  private alertaSubject = new BehaviorSubject<AlertData | null>(null);
+  alerta$ = this.alertaSubject.asObservable();
+  alertBody: AlertData;
+  showAlert(tipo: AlertType, titulo: string, mensaje: string) {
+    this.alertBody = {
+      tipo,
+      titulo,
+      mensaje
     }
+    this.alertaSubject.next(null); // limpia la actual primero
+    setTimeout(() => this.alertaSubject.next(this.alertBody), 0); // fuerza nuevo render
+  }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Getter for onDismiss
-     */
-    get onDismiss(): Observable<any>
-    {
-        return this._onDismiss.asObservable();
-    }
-
-    /**
-     * Getter for onShow
-     */
-    get onShow(): Observable<any>
-    {
-        return this._onShow.asObservable();
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Dismiss the alert
-     *
-     * @param name
-     */
-    dismiss(name: string): void
-    {
-        // Return if the name is not provided
-        if ( !name )
-        {
-            return;
-        }
-
-        // Execute the observable
-        this._onDismiss.next(name);
-    }
-
-    /**
-     * Show the dismissed alert
-     *
-     * @param name
-     */
-    show(name: string): void
-    {
-        // Return if the name is not provided
-        if ( !name )
-        {
-            return;
-        }
-
-        // Execute the observable
-        this._onShow.next(name);
-    }
-
+  clean() {
+    this.alertaSubject.next(null);
+  }
 }

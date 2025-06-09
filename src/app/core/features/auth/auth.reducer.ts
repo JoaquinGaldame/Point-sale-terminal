@@ -66,7 +66,8 @@ export const authUserReducer = createReducer(
   on(sigInSuccess, (state, {user}) => ({
     ...state,
     loading: false,
-    user: user
+    user: user,
+    initialized: true,
   })),
 
   on(sigInFailure, (state, {error}) => ({

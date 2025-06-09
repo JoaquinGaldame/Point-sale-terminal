@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './core/auth/guards/auth.guard';
 import { NoAuthGuard } from './core/auth/guards/noAuth.guard';
 import { LayoutComponent } from './core/layout/layout.component';
+import { EmptyLayoutComponent } from './core/layout/layouts/empty/empty.component';
 
 
 export const routes: Routes = [
@@ -13,7 +14,7 @@ export const routes: Routes = [
     path: '',
     canActivate: [NoAuthGuard],
     canActivateChild: [NoAuthGuard],
-    component: LayoutComponent,
+    component: EmptyLayoutComponent,
     data: {
       layout: 'empty'
     },
@@ -52,28 +53,32 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
     component: LayoutComponent,
-    data: {
-      layout: 'empty'
-    },
+    data: { layout: 'default' },
     children: [
       {
         path: 'home', 
         loadChildren: () => import('src/app/modules/home/home.routing').then(m => m.HOME_ROUTES)
       },
+      {
+        path: 'ventas', 
+        loadChildren: () => import('src/app/modules/ventas/ventas.routing').then(m => m.VENTAS_ROUTES)
+      },
+      {
+        path: 'movCajas', 
+        loadChildren: () => import('src/app/modules/movimiento-caja/movimiento-caja.routing').then(m => m.MovimCaja_ROUTES)
+      },
+      {
+        path: 'formEgresoIngreso', 
+        loadChildren: () => import('src/app/modules/form-egreso-ingreso/from-egreso-ingreso.routing').then(m => m.FormEgreIngre_ROUTES)
+      },
+      {
+        path: 'reportes', 
+        loadChildren: () => import('src/app/modules/reportes/reportes.routing').then(m => m.REPORTES_ROUTES)
+      },
+      {
+        path: 'productos', 
+        loadChildren: () => import('src/app/modules/productos/productos.routing').then(m => m.PRODUCTOS_ROUTES)
+      }
     ]
   },
-
-  // {
-  //   path: 'login',
-  //   loadChildren: () => import('./auth/login/login.routes').then(m => m.LOGIN),
-  // },
-  // {
-  //   path: '',
-  //   canActivateChild: [authGuard],  // protege todas las hijas
-  //   loadChildren: () => import('./core/layout/app.routes').then(m => m.APP_ROUTES),
-  // },
-  // {
-  //   path: '**',
-  //   redirectTo: 'login',
-  // }
 ];

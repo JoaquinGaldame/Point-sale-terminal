@@ -1,15 +1,7 @@
-export type AlertAppearance =
-  | 'border'
-  | 'fill'
-  | 'outline'
-  | 'soft';
+export type AlertType = 'success' | 'error' | 'warning' | 'notification';
 
-export type AlertType =
-  | 'primary'
-  | 'accent'
-  | 'warn'
-  | 'basic'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'error';
+export interface AlertData {
+  tipo: AlertType;
+  titulo: string;
+  mensaje: string;
+}
